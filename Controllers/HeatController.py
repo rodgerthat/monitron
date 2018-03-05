@@ -13,19 +13,19 @@ class HeatController():
         GPIO.setmode(GPIO.BCM)
         GPIO.setwarnings(False)
         GPIO.setup(18, GPIO.OUT)
-        heatON = False;
+        self.heatON = False;
 
     def turn_ON(self):
 
         # turn on the HEAT
         GPIO.output(18, GPIO.HIGH)
-        heatON = True
+        self.heatON = True
 
     def turn_OFF(self):
 
         # turn off the HEAT (brow brow kiddies!)
         GPIO.output(18, GPIO.LOW)
-        heatON = False
+        self.heatON = False
 
 
 

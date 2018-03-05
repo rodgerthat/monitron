@@ -28,7 +28,7 @@ class Monitron:
         # initialize
         self.tempGetter = TempGetter()
         #self.tempStorer = TempStorer()
-        #self.heatController = HeatController()
+        self.heatController = HeatController()
 
     def monitor(self, tempMin, tempMax, timeInterval):
 
@@ -47,27 +47,28 @@ class Monitron:
             # print(self.currentTemp)
 
             # test the HeatController
-            # if self.heatController.heatON == False:
-            #     self.heatController.turn_ON()
-            # else:
-            #     self.heatController.turn_OFF()
+            if self.heatController.heatON == False:
+                self.heatController.turn_ON()
+            else:
+                self.heatController.turn_OFF()
 
             # self.currentTemp = self.tempGetter.get_temp('C')
-            #
-            # if self.currentTemp < tempMin:
-            #
-            #     # turn heat on
-            #     self.heatON = True
-            #     self.heatController.turnON()
-            #
-            # elif self.currentTemp > tempMax:
-            #
-            #     # turn heat off
-            #     self.heatON = False
-            #     self.heatController.turnOFF()
+
+            # if it's currently lower then as low as we want it.
+            if self.currentTemp < tempMin:
+
+                # turn heat on
+                self.heatController.turn_ON()
+
+            elif self.currentTemp > tempMax:
+
+                # turn heat off
+                self.heatController.turn_OFF()
 
             # get the current temperature in Celcius
             self.currentTemp = self.tempGetter.get_temp('C')
+            print(self.currentTemp)
+            self.currentTemp = self.tempGetter.get_temp('F')
             print(self.currentTemp)
 
             # give it a rest. don't spam the sensor too much
