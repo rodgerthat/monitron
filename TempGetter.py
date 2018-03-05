@@ -5,6 +5,8 @@
 import os
 import glob
 import time
+from threading import Timer
+
 
 class TempGetter:
 
@@ -14,20 +16,41 @@ class TempGetter:
     device_folder = glob.glob(base_dir + '28*')[0]
     device_file = device_folder + '/w1_slave'
 
-    rawTemp = 0
+    raw_temp = 0
+    temp_string = '0'
 
     # main method of functionality for class
     # get a temperature from a temp sensor and return it in requested format
     # TODO: add additional param for temp formatting, raw, C, F, K, Whatevs
-    def getTemp(self):
+    def get_temp(self, format):
 
-        self.rawTemp = self.read_temp_raw()
+        self.raw_temp = self.read_temp_raw()
 
-        return self.rawTemp
+        self.temp_string = self.read_temp()
 
-    # open the device and read the temp from the file (everything in linux is a file)
-    # read it, then close the file,
-    # returns the file data
+        # in Celcius
+        if format == 'C':
+            return self.convert_to_celcius()
+
+        # in Farenheight
+        elif format == 'F':
+            return self.convert_to_farenheight()
+
+        # Raw Temp Sensor Data
+        elif format == 'R':
+            return self.raw_temp
+
+        else:
+            return 'No Format Specified'
+
+    def convert_to_celcius(self):
+
+        return float(self.temp_string) / 1000.0
+
+    def convert_to_farenheight(self):
+
+        return (self.convert_to_celcius()) * 9.0 / 5.0 + 32.0
+
     def read_temp_raw(self):
 
         f = open(self.device_file, 'r')
@@ -42,17 +65,12 @@ class TempGetter:
         lines = self.read_temp_raw()
 
         while lines[0].strip()[-3:] != 'YES':
-            time.sleep(0.05)
+            #time.sleep(0.05)
             lines = self.read_temp_raw()
 
         equals_pos = lines[1].find('t=')
 
         if equals_pos != -1:
-            temp_string = lines[1][equals_pos+2:]
-            temp_c = float(temp_string) / 1000.0
-            temp_f = temp_c * 9.0 / 5.0 + 32.0
-            #return int(temp_string)
-            #return temp_c
-            temp_string = str(temp_f)
-            return temp_string
+
+            return lines[1][equals_pos+2:]
 

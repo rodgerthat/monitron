@@ -3,15 +3,10 @@
 # description:
 # monitors shed 1
 
-
 import time
-from threading import Timer
 
-from datetime import datetime
-from time import gmtime, strftime
-
-import TempGetter
-import TempStorer
+from TempGetter import TempGetter
+from TempStorer import TempStorer
 
 
 class Monitron:
@@ -30,15 +25,22 @@ class Monitron:
 
         while True:
 
-            self.currentTemp = self.tempGetter.getTemp()
-
+            self.currentTemp = self.tempGetter.get_temp('R')
             print(self.currentTemp)
+
+            self.currentTemp = self.tempGetter.get_temp('C')
+            print(self.currentTemp)
+
+            self.currentTemp = self.tempGetter.get_temp('F')
+            print(self.currentTemp)
+
+            time.sleep(5)
 
 
 def main():
 
     monitron = Monitron()
-    monitron.moitor(70, 80)
+    monitron.monitor(70, 80)
 
 
 main()
