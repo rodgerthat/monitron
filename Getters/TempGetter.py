@@ -4,10 +4,9 @@
 
 import os
 import glob
-import time
-from threading import Timer
 
 
+# TODO: add additional class constructor param to accept which device (i.e. multiple temp sensors)
 class TempGetter:
 
     os.system('modprobe w1-gpio')
@@ -21,36 +20,39 @@ class TempGetter:
 
     # main method of functionality for class
     # get a temperature from a temp sensor and return it in requested format
-    # TODO: add additional param for temp formatting, raw, C, F, K, Whatevs
-    def get_temp(self, format):
+    def get_temp(self, temp_format):
 
         self.raw_temp = self.read_temp_raw()
 
         self.temp_string = self.read_temp()
 
-        # in Celcius
-        if format == 'C':
+        # in Celsius
+        if temp_format == 'C':
             return self.convert_to_celcius()
 
-        # in Farenheight
-        elif format == 'F':
+        # in Fahrenheit
+        elif temp_format == 'F':
             return self.convert_to_farenheight()
 
         # Raw Temp Sensor Data
-        elif format == 'R':
+        elif temp_format == 'R':
             return self.raw_temp
 
         else:
             return 'No Format Specified'
 
+    # converts the base raw temp integer to celsius by dividing by a float of 1000.0
+    # this just adds a decimal to it
     def convert_to_celcius(self):
 
         return float(self.temp_string) / 1000.0
 
+    # converts temp data from celsius to fahrenheit
     def convert_to_farenheight(self):
 
         return (self.convert_to_celcius()) * 9.0 / 5.0 + 32.0
 
+    # returns the raw data from the temp sensor
     def read_temp_raw(self):
 
         f = open(self.device_file, 'r')
@@ -59,13 +61,12 @@ class TempGetter:
         return lines
 
     # reads the lines and splits after the key values before the data
-    # converts to normal celcius value and returns that and converts to degrees F
     def read_temp(self):
 
         lines = self.read_temp_raw()
 
         while lines[0].strip()[-3:] != 'YES':
-            #time.sleep(0.05)
+            # time.sleep(0.05)
             lines = self.read_temp_raw()
 
         equals_pos = lines[1].find('t=')

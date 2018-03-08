@@ -1,14 +1,12 @@
 # filename: monitron.py
 # author: rodgerthat
 # description:
-# monitors shed 1
+#   monitors shed 1
 
-import os
-import sys
 import time
 
 from Getters.TempGetter import TempGetter
-#from Setters.TempStorer import TempStorer
+# from Setters.TempStorer import TempStorer
 from Controllers.HeatController import HeatController
 
 
