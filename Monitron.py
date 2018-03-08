@@ -38,16 +38,18 @@ class Monitron:
             # see what's up
 
             # # get the current temperature in Raw Temp Data, direct from the
-            # self.currentTemp = self.tempGetter.get_temp('R')
+            # self.currentTemp = self.tempGetter.get_temp('R', 2)
             # print(self.currentTemp)
-            #
-            # # get the current temperature in Celsius
-            # self.currentTemp = self.tempGetter.get_temp('C')
-            # print(self.currentTemp)
-            #
-            # # get the current temperature in Fahrenheit
-            # self.currentTemp = self.tempGetter.get_temp('F')
-            # print(self.currentTemp)
+
+            # get the current temperature in Celsius
+            self.currentTemp = self.tempGetter.get_temp('C', 2)
+            print(self.currentTemp)
+
+            # get the current temperature in Fahrenheit
+            self.currentTemp = self.tempGetter.get_temp('F', 2)
+            print(self.currentTemp)
+
+            print("----------------------")
 
             # test the HeatController
             # if it's on, turn it off,
@@ -64,37 +66,42 @@ class Monitron:
             #
             #     self.heatController.turn_ON()
 
-            # get the current temperature in Fahrenheit
-            self.currentTemp = self.tempGetter.get_temp('F')
-
-            # if the current temp is lower then the lowest temp minimum we want,
-            if self.currentTemp < temp_min:
-
-                print("currentTemp : {} < temp_min : {}".format(self.currentTemp, temp_min))
-
-                # turn heat on
-                self.heatController.turn_ON()
-
-            # else if the current temp is greater than the max temp we want,
-            elif self.currentTemp > temp_max:
-
-                print("currentTemp : {} < temp_max : {}".format(self.currentTemp, temp_min))
-
-                # turn heat off, if it isnt' already off
-                self.heatController.turn_OFF()
-
-            # checkitty check yo sef b4 u wreck yo sef
-            self.print_status()
-
             # give it a rest. don't spam the sensor too much
             time.sleep(time_interval)
+
+    def monitor_heat(self, temp_min, temp_max, time_interval):
+
+        # get the current temperature in Fahrenheit
+        self.currentTemp = self.tempGetter.get_temp('F')
+
+        # if the current temp is lower then the lowest temp minimum we want,
+        if self.currentTemp < temp_min:
+
+            print("currentTemp : {} < temp_min : {}".format(self.currentTemp, temp_min))
+
+            # turn heat on
+            self.heatController.turn_ON()
+
+        # else if the current temp is greater than the max temp we want,
+        elif self.currentTemp > temp_max:
+
+            print("currentTemp : {} < temp_max : {}".format(self.currentTemp, temp_min))
+
+            # turn heat off, if it isnt' already off
+            self.heatController.turn_OFF()
+
+        # checkitty check yo sef b4 u wreck yo sef
+        self.print_status()
+
+        # give it a rest. don't spam the sensor too much
+        time.sleep(time_interval)
 
 
 def main():
 
     monitron = Monitron()
-    # monitron.monitor(80, 90, 3)   # just for heat controller test
     monitron.monitor(80, 90, 1)
+    # monitron.monitor_heat(80, 90, 1)
 
 
 main()

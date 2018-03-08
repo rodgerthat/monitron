@@ -4,6 +4,7 @@
 
 import os
 import glob
+from decimal import Decimal
 
 
 # TODO: add additional class constructor param to accept which device (i.e. multiple temp sensors)
@@ -15,42 +16,61 @@ class TempGetter:
     device_folder = glob.glob(base_dir + '28*')[0]
     device_file = device_folder + '/w1_slave'
 
-    raw_temp = 0
-    temp_string = '0'
+    rawTemp = 0
+    tempString = '0'
+    numDecimalPlaces = 2
 
     # main method of functionality for class
     # get a temperature from a temp sensor and return it in requested format
-    def get_temp(self, temp_format):
+    def get_temp(self, temp_format, num_decimal_places):
 
-        self.raw_temp = self.read_temp_raw()
+        self.numDecimalPlaces = num_decimal_places
 
-        self.temp_string = self.read_temp()
+        self.rawTemp = self.read_temp_raw()
+
+        self.tempString = self.read_temp()
 
         # in Celsius
         if temp_format == 'C':
-            return self.convert_to_celcius()
+            return self.convert_to_celsius()
 
         # in Fahrenheit
         elif temp_format == 'F':
-            return self.convert_to_farenheight()
+            return self.convert_to_fahrenheit()
 
         # Raw Temp Sensor Data
         elif temp_format == 'R':
-            return self.raw_temp
+            return self.rawTemp
 
         else:
             return 'No Format Specified'
 
+    def round_it(self, num_to_be_rounded):
+
+        # First we take a float and convert it to a decimal
+        decimal_temp = Decimal(num_to_be_rounded)
+
+        # Then we round it to 2 places
+        return round(decimal_temp, self.numDecimalPlaces)
+
     # converts the base raw temp integer to celsius by dividing by a float of 1000.0
     # this just adds a decimal to it
-    def convert_to_celcius(self):
+    def convert_to_celsius(self):
 
-        return float(self.temp_string) / 1000.0
+        temp_celsius = float(self.tempString) / 1000.0
+        return "{0:.2f}".format(temp_celsius);
+
+        # return self.round_it(temp_celsius)
+        # return float(self.tempString) / 1000.0
 
     # converts temp data from celsius to fahrenheit
-    def convert_to_farenheight(self):
+    def convert_to_fahrenheit(self):
 
-        return (self.convert_to_celcius()) * 9.0 / 5.0 + 32.0
+        temp_fahrenheit = (float(self.tempString) / 1000.0) * 9.00 / 5.00 + 32.00
+        return "{0:.2f}".format(temp_fahrenheit);
+
+        # return self.round_it(temp_fahrenheit)
+        # return (self.convert_to_celsius()) * 9.0 / 5.0 + 32.0
 
     # returns the raw data from the temp sensor
     def read_temp_raw(self):
