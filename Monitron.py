@@ -8,10 +8,8 @@ import sys
 import time
 
 from Getters.TempGetter import TempGetter
-#from Setters.TempStorer import TempStorer.TempStorer
+#from Setters.TempStorer import TempStorer
 from Controllers.HeatController import HeatController
-
-#sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
 
 
 class Monitron:
@@ -34,7 +32,7 @@ class Monitron:
 
         while True:
 
-            # # get the current temperature in Raw Temp Data
+            # # get the current temperature in Raw Temp Data, direct from the
             # self.currentTemp = self.tempGetter.get_temp('R')
             # print(self.currentTemp)
             #
@@ -47,29 +45,31 @@ class Monitron:
             # print(self.currentTemp)
 
             # test the HeatController
-            if self.heatController.heatON == False:
-                self.heatController.turn_ON()
-            else:
-                self.heatController.turn_OFF()
+            # if self.heatController.heatON == False:
+            #
+            #     self.heatController.turn_ON()
+            #
+            # else:
+            #
+            #     self.heatController.turn_OFF()
 
-            # self.currentTemp = self.tempGetter.get_temp('C')
+            # get the current temperature in Farenheight
+            self.currentTemp = self.tempGetter.get_temp('F')
+            print(self.currentTemp)
 
-            # if it's currently lower then as low as we want it.
+            # if the current temp is lower then the lowest temp minimum we want,
             if self.currentTemp < tempMin:
 
                 # turn heat on
                 self.heatController.turn_ON()
+                print(self.heatController.heatON)
 
+            # else if the current temp is greater than the max temp we want,
             elif self.currentTemp > tempMax:
 
                 # turn heat off
                 self.heatController.turn_OFF()
-
-            # get the current temperature in Celcius
-            self.currentTemp = self.tempGetter.get_temp('C')
-            print(self.currentTemp)
-            self.currentTemp = self.tempGetter.get_temp('F')
-            print(self.currentTemp)
+                print(self.heatController.heatON)
 
             # give it a rest. don't spam the sensor too much
             time.sleep(timeInterval)
@@ -78,7 +78,7 @@ class Monitron:
 def main():
 
     monitron = Monitron()
-    monitron.monitor(70, 80, 5)
-
+    #monitron.monitor(80, 90, 5)
+    monitron.monitor(80, 83, 1)
 
 main()
