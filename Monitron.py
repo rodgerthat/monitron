@@ -5,9 +5,9 @@
 
 import time
 
-import Getters.TempGetter
-import Setters.DataStorer
-import Controllers.HeatController
+from Getters.TempGetter import TempGetter
+from Setters.DataStorer import DataStorer
+from Controllers.HeatController import HeatController
 
 
 class Monitron:
@@ -20,9 +20,9 @@ class Monitron:
     def __init__(self):
 
         # initialize
-        self.tempGetter = Getters.TempGetter.TempGetter()
-        self.dataStorer = Setters.DataStorer.DataStorer()
-        self.heatController = Controllers.HeatController.HeatController('NormallyON')  # Tell the controller which plug
+        self.tempGetter = TempGetter()
+        self.dataStorer = DataStorer()
+        self.heatController = HeatController('NormallyON')  # Tell the controller which plug
 
     def print_status(self):
 
