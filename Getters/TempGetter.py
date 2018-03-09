@@ -22,9 +22,7 @@ class TempGetter:
 
     # main method of functionality for class
     # get a temperature from a temp sensor and return it in requested format
-    def get_temp(self, temp_format, num_decimal_places):
-
-        self.numDecimalPlaces = num_decimal_places
+    def get_temp(self, temp_format):
 
         self.rawTemp = self.read_temp_raw()
 
@@ -45,20 +43,23 @@ class TempGetter:
         else:
             return 'No Format Specified'
 
-    def round_it(self, num_to_be_rounded):
-
-        # First we take a float and convert it to a decimal
-        decimal_temp = Decimal(num_to_be_rounded)
-
-        # Then we round it to 2 places
-        return round(decimal_temp, self.numDecimalPlaces)
+    # def round_it(self, num_to_be_rounded):
+    #
+    #     # First we take a float and convert it to a decimal
+    #     decimal_temp = Decimal(num_to_be_rounded)
+    #
+    #     # Then we round it to 2 places
+    #     return round(decimal_temp, self.numDecimalPlaces)
 
     # converts the base raw temp integer to celsius by dividing by a float of 1000.0
     # this just adds a decimal to it
     def convert_to_celsius(self):
 
+        # TODO : find a way to control the number of decimal places dynamically.
         temp_celsius = float(self.tempString) / 1000.0
         return "{0:.2f}".format(temp_celsius);
+        # TODO : use this for rounding, then return float value
+        # return round("{0:.2f}".format(temp_celsius), self.numDecimalPlaces)
 
         # return self.round_it(temp_celsius)
         # return float(self.tempString) / 1000.0

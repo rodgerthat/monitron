@@ -1,3 +1,5 @@
+#!/usr/bin/env python2
+#
 # filename: Monitron.py
 # author: rodgerthat
 # description:
@@ -49,7 +51,7 @@ class Monitron:
             # self.currentTemp = self.tempGetter.get_temp('F', 2)
             # print(self.currentTemp)
 
-            self.currentTemp = self.tempGetter.get_temp('F', 2)
+            self.currentTemp = self.tempGetter.get_temp('F')
             self.dataStorer.store_data(self.currentTemp)
             print(self.currentTemp)
 
@@ -73,34 +75,38 @@ class Monitron:
 
     def monitor_heat(self, temp_min, temp_max, time_interval):
 
-        # get the current temperature in Fahrenheit
-        self.currentTemp = self.tempGetter.get_temp('F')
+        while True:
 
-        # if the current temp is lower then the lowest temp minimum we want,
-        if self.currentTemp < temp_min:
+            # get the current temperature in Fahrenheit
+            self.currentTemp = self.tempGetter.get_temp('F')
 
-            # print("currentTemp : {} < temp_min : {}".format(self.currentTemp, temp_min))
-            self.heatController.turn_ON()   # turn heat on
+            self.dataStorer.store_data(self.currentTemp)    # store the current temp
 
-        # else if the current temp is greater than the max temp we want,
-        elif self.currentTemp > temp_max:
+            # if the current temp is lower then the lowest temp minimum we want,
+            if self.currentTemp < temp_min:
 
-            # print("currentTemp : {} < temp_max : {}".format(self.currentTemp, temp_min))
-            self.heatController.turn_OFF()  # turn heat off, if it isnt' already off
+                # print("currentTemp : {} < temp_min : {}".format(self.currentTemp, temp_min))
+                self.heatController.turn_ON()   # turn heat on
 
-        # TODO : Add a default case else here
-        # checkitty check yo sef b4 u wreck yo sef
-        self.print_status()
+            # else if the current temp is greater than the max temp we want,
+            elif self.currentTemp > temp_max:
 
-        # give it a rest. don't spam the sensor too much
-        time.sleep(time_interval)
+                # print("currentTemp : {} < temp_max : {}".format(self.currentTemp, temp_min))
+                self.heatController.turn_OFF()  # turn heat off, if it isnt' already off
+
+            # TODO : Add a default case else here
+            # checkitty check yo sef b4 u wreck yo sef
+            self.print_status()
+
+            # give it a rest. don't spam the sensor too much
+            time.sleep(time_interval)
 
 
 def main():
 
     monitron = Monitron()
-    monitron.monitor(80, 90, 60)
-    # monitron.monitor_heat(80, 90, 60)
+    # monitron.monitor(80, 90, 60)
+    monitron.monitor_heat(80, 90, 60)
 
 
 main()
