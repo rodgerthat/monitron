@@ -1,42 +1,57 @@
 # filename TempStorer.py
 
 import time
+import datetime
+import os
 
 
-class TempStorer:
+# TODO: data_to_store should be an array or some other structure that can pass thru multiple data
+class DataStorer:
 
     currentTemp = 0.0
+    currentFile = object
+    currentFileName = 'currentFileName.csv'
+    currentFilePath = os.getcwd() + '/DataLogs/currentFile.csv'
+    currentEpochTime = int(time.time())
+    dataLogsDirectoryName = 'DataLogs'
 
     def __init__(self):
 
-        self.open_create_file
+        self.create_file()
 
-    def open_create_file(self):
+    def create_file(self):
 
-        # name file by today's date
-        date_today = time.strftime("%Y-%m-%d", time.gmtime())  # get current date
+        current_date_time = datetime.datetime.now()
+        self.currentFileName = 'DataLog-%s-%s-%s.csv' % (current_date_time.year, current_date_time.month, current_date_time.day)
+        self.currentFilePath = "{}/{}/{}".format(os.getcwd(), self.dataLogsDirectoryName, self.currentFileName)
 
-        # filename = date_today + ".dat"
+        # check if a file has already been created today,
+        # if not, create it, if so, don't
+        if not os.path.exists(self.currentFilePath):
 
-        # f = filename
-        # f = open(filename, "w+")
+            print(self.currentFilePath)
+            self.currentFile = open(self.currentFilePath, "w+")
+            self.currentFile.close()
 
-    def create_temp_data(self, incommingTemp):
+    def create_storable_data(self, data_to_store):
 
-        self.currentTemp = incommingTemp
+        # create a csv string with epoch time and temp data
+        self.currentTemp = data_to_store
+        self.currentEpochTime = int(time.time())
 
-    def store_temp(self, incommingTemp):
+        storable_data = "{}, {}\n".format(self.currentEpochTime, self.currentTemp)
 
-        # open file,
+        return storable_data
 
-        f = open('2018-03-04.txt', 'a')	# open logfile for writing
-        # right_now = datetime.time(datetime.now())
-        right_now = time.strftime("%Y-%m-%d %H:%M:%S", time.gmtime())
-        logmsg =  right_now + " " + incommingTemp()
-        print(logmsg)
-        # print(read_temp())
-        # f.write(logmsg)
-        # f.close()
+    def store_data(self, data_to_store):
+
+        storable_data = self.create_storable_data(data_to_store)
+
+        # open file, to append with data
+        self.currentFile = open(self.currentFilePath, "a")
+        self.currentFile.write(storable_data)
+        self.currentFile.close()
+
 
 
 

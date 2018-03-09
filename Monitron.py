@@ -6,7 +6,7 @@
 import time
 
 from Getters.TempGetter import TempGetter
-# from Setters.TempStorer import TempStorer
+from Setters.DataStorer import DataStorer
 from Controllers.HeatController import HeatController
 
 
@@ -21,7 +21,7 @@ class Monitron:
 
         # initialize
         self.tempGetter = TempGetter()
-        # self.tempStorer = TempStorer()
+        self.dataStorer = DataStorer()
         self.heatController = HeatController('NormallyON')  # Tell the controller which plug
 
     def print_status(self):
@@ -41,15 +41,17 @@ class Monitron:
             # self.currentTemp = self.tempGetter.get_temp('R', 2)
             # print(self.currentTemp)
 
-            # get the current temperature in Celsius
-            self.currentTemp = self.tempGetter.get_temp('C', 2)
-            print(self.currentTemp)
+            # # get the current temperature in Celsius
+            # self.currentTemp = self.tempGetter.get_temp('C', 2)
+            # print(self.currentTemp)
 
-            # get the current temperature in Fahrenheit
+            # # get the current temperature in Fahrenheit
+            # self.currentTemp = self.tempGetter.get_temp('F', 2)
+            # print(self.currentTemp)
+
             self.currentTemp = self.tempGetter.get_temp('F', 2)
+            self.dataStorer.store_data(self.currentTemp)
             print(self.currentTemp)
-
-            print("----------------------")
 
             # test the HeatController
             # if it's on, turn it off,
@@ -100,7 +102,7 @@ class Monitron:
 def main():
 
     monitron = Monitron()
-    monitron.monitor(80, 90, 1)
+    monitron.monitor(80, 90, 60)
     # monitron.monitor_heat(80, 90, 1)
 
 
