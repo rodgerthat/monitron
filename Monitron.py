@@ -1,13 +1,13 @@
-# filename: monitron.py
+# filename: Monitron.py
 # author: rodgerthat
 # description:
-#   monitors shed 1
+#   monitors shed 1,
 
 import time
 
-from Getters.TempGetter import TempGetter
-from Setters.DataStorer import DataStorer
-from Controllers.HeatController import HeatController
+import Getters.TempGetter
+import Setters.DataStorer
+import Controllers.HeatController
 
 
 class Monitron:
@@ -20,9 +20,9 @@ class Monitron:
     def __init__(self):
 
         # initialize
-        self.tempGetter = TempGetter()
-        self.dataStorer = DataStorer()
-        self.heatController = HeatController('NormallyON')  # Tell the controller which plug
+        self.tempGetter = Getters.TempGetter.TempGetter()
+        self.dataStorer = Setters.DataStorer.DataStorer()
+        self.heatController = Controllers.HeatController.HeatController('NormallyON')  # Tell the controller which plug
 
     def print_status(self):
 
@@ -79,19 +79,16 @@ class Monitron:
         # if the current temp is lower then the lowest temp minimum we want,
         if self.currentTemp < temp_min:
 
-            print("currentTemp : {} < temp_min : {}".format(self.currentTemp, temp_min))
-
-            # turn heat on
-            self.heatController.turn_ON()
+            # print("currentTemp : {} < temp_min : {}".format(self.currentTemp, temp_min))
+            self.heatController.turn_ON()   # turn heat on
 
         # else if the current temp is greater than the max temp we want,
         elif self.currentTemp > temp_max:
 
-            print("currentTemp : {} < temp_max : {}".format(self.currentTemp, temp_min))
+            # print("currentTemp : {} < temp_max : {}".format(self.currentTemp, temp_min))
+            self.heatController.turn_OFF()  # turn heat off, if it isnt' already off
 
-            # turn heat off, if it isnt' already off
-            self.heatController.turn_OFF()
-
+        # TODO : Add a default case else here
         # checkitty check yo sef b4 u wreck yo sef
         self.print_status()
 
@@ -103,7 +100,7 @@ def main():
 
     monitron = Monitron()
     monitron.monitor(80, 90, 60)
-    # monitron.monitor_heat(80, 90, 1)
+    # monitron.monitor_heat(80, 90, 60)
 
 
 main()
