@@ -31,7 +31,7 @@ class DataStorer:
 
             print(self.currentFilePath)
             self.currentFile = open(self.currentFilePath, "w+")
-            self.currentTemp.write("td, t1")
+            self.currentFile.write("td, t1")
             self.currentFile.close()
 
     def create_storable_data(self, data_to_store):
