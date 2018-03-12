@@ -11,9 +11,12 @@ class DataStorer:
     currentTemp = 0.0
     currentFile = object
     currentFileName = 'currentFileName.csv'
+    # this returns the path to the location where python was executed.
     currentFilePath = os.getcwd() + '/DataLogs/currentFile.csv'
+    # currentFilePath = os.path.dirname(os.path.realpath(__file__))
     currentEpochTime = int(time.time())
     dataLogsDirectoryName = 'DataLogs'
+    dataLogFilePath = 'home/pi/MTMT/Monitron'   # hopefully
 
     def __init__(self):
 
@@ -22,6 +25,7 @@ class DataStorer:
     def create_file(self):
 
         current_date_time = datetime.datetime.now()
+        # TODO : clean up the pathfinding, try not to use os.getcwd() down here, but rather up in properties.
         self.currentFileName = 'DataLog-%s-%s-%s.csv' % (current_date_time.year, current_date_time.month, current_date_time.day)
         self.currentFilePath = "{}/{}/{}".format(os.getcwd(), self.dataLogsDirectoryName, self.currentFileName)
 

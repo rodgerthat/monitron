@@ -82,19 +82,33 @@ class Monitron:
 
             self.dataStorer.store_data(self.currentTemp)    # store the current temp
 
+            # if self.currentTemp > temp_min and self.currentTemp < temp_max:
+            #
+            #     self.heatController.turn_ON()
+            #
+            # else:
+            #
+            #     self.heatController.turn_OFF()
+
+            # print("currentTemp : {} | temp_min : {} | temp_max : {}".format(type(self.currentTemp), type(temp_min), type(temp_max)))
+
             # if the current temp is lower then the lowest temp minimum we want,
-            if self.currentTemp < temp_min:
+            if float(self.currentTemp) < float(temp_min):
 
                 print("currentTemp : {} < temp_min : {}".format(self.currentTemp, temp_min))
                 print("{} > {} | {}".format(self.currentTemp, temp_min, self.currentTemp < temp_min))
                 self.heatController.turn_ON()   # turn heat on
 
             # else if the current temp is greater than the max temp we want,
-            if self.currentTemp > temp_max:
+            elif float(self.currentTemp) > float(temp_max):
 
                 print("currentTemp : {} > temp_max : {}".format(self.currentTemp, temp_max))
                 print("{} > {} | {}".format(self.currentTemp, temp_max, self.currentTemp > temp_max))
                 self.heatController.turn_OFF()  # turn heat off, if it isnt' already off
+
+            else:
+
+                print("Neither condition has been met")
 
             # TODO : Add a default case else here
             # checkitty check yo sef b4 u wreck yo sef

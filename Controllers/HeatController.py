@@ -19,10 +19,10 @@ class HeatController:
         GPIO.setup(18, GPIO.OUT)
 
         if self.outletType == 'NormallyON':
-            GPIO.output(18, GPIO.HIGH)   # the IoT relay initially starts in the OFF position
+            GPIO.output(18, GPIO.LOW)   # the IoT relay initially starts in the OFF position
 
         elif self.outletType == 'NormallyOFF':
-            GPIO.output(18, GPIO.LOW)   # the IoT relay initially starts in the OFF position
+            GPIO.output(18, GPIO.HIGH)   # the IoT relay initially starts in the OFF position
 
     def turn_ON(self):
 
