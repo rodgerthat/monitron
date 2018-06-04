@@ -62,7 +62,7 @@ class TempGetter:
 
         # TODO : find a way to control the number of decimal places dynamically.
         temp_celsius = float(self.tempString) / 1000.0
-        return "{0:.2f}".format(temp_celsius);
+        return "{0:.2f}".format(temp_celsius)
         # TODO : use this for rounding, then return float value
         # return round("{0:.2f}".format(temp_celsius), self.numDecimalPlaces)
 
