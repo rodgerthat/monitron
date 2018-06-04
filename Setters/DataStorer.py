@@ -3,6 +3,7 @@
 import time
 import datetime
 import os
+from Getters.TimeGetter import TimeGetter as TimeGetter
 
 
 # TODO: data_to_store should be an array or some other structure that can pass thru multiple data
@@ -14,7 +15,7 @@ class DataStorer:
     # this returns the path to the location where python was executed.
     currentFilePath = os.getcwd() + '/DataLogs/currentFile.csv'
     # currentFilePath = os.path.dirname(os.path.realpath(__file__))
-    currentEpochTime = int(time.time())
+    currentEpochTime = TimeGetter.get_epoch_time()
     dataLogsDirectoryName = 'DataLogs'
     dataLogFilePath = 'home/pi/MTMT/Monitron'   # hopefully
 

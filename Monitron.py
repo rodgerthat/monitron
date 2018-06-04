@@ -7,9 +7,13 @@
 
 import time
 
-from Getters.TempGetter import TempGetter
-from Setters.DataStorer import DataStorer
-from Controllers.HeatController import HeatController
+# TODO : you're using aliases now, come back and clean up all the 'self' references.
+# since the class technically doesn't need to have the getters and setters as object properties.
+
+from Getters.TempGetter import TempGetter as TempGetter
+from Getters.TimeGetter import TimeGetter as TimeGetter
+from Setters.DataStorer import DataStorer as DataStorer
+from Controllers.HeatController import HeatController as HeatController
 
 
 class Monitron:
@@ -30,7 +34,7 @@ class Monitron:
 
         # print "%s %s" % (hello, world)
         # print("{} {}".format(hello, world))
-        print("Temp : {} | heatON : {}".format(self.currentTemp, self.heatController.heatON))
+        print("{} : Temp : {} | heatON : {}".format(TimeGetter.get_epoch_time(), self.currentTemp, self.heatController.heatON))
         print("-----------------------------------------")
 
     def monitor(self, temp_min, temp_max, time_interval):
@@ -95,20 +99,20 @@ class Monitron:
             # if the current temp is lower then the lowest temp minimum we want,
             if float(self.currentTemp) < float(temp_min):
 
-                print("currentTemp : {} < temp_min : {}".format(self.currentTemp, temp_min))
-                print("{} > {} | {}".format(self.currentTemp, temp_min, self.currentTemp < temp_min))
+                # print("currentTemp : {} < temp_min : {}".format(self.currentTemp, temp_min))
+                print("{} : {} > {} | {}".format(TimeGetter.get_epoch_time(), self.currentTemp, temp_min, self.currentTemp < temp_min))
                 self.heatController.turn_ON()   # turn heat on
 
             # else if the current temp is greater than the max temp we want,
             elif float(self.currentTemp) > float(temp_max):
 
-                print("currentTemp : {} > temp_max : {}".format(self.currentTemp, temp_max))
-                print("{} > {} | {}".format(self.currentTemp, temp_max, self.currentTemp > temp_max))
+                # print("currentTemp : {} > temp_max : {}".format(self.currentTemp, temp_max))
+                print("{} : {} > {} | {}".format(TimeGetter.get_epoch_time(), self.currentTemp, temp_max, self.currentTemp > temp_max))
                 self.heatController.turn_OFF()  # turn heat off, if it isnt' already off
 
-            else:
+            # else:
 
-                print("Neither condition has been met")
+                # print("Neither condition has been met")
 
             # TODO : Add a default case else here
             # checkitty check yo sef b4 u wreck yo sef

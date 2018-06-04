@@ -1,6 +1,7 @@
-# filename: GetTemp.py
+# filename: TempGetter.py
 # author: rodgerthat
-# description:
+# description: A Class to get temperature data from DS18B-something temp sensors.
+# note: everything in linux is a file.
 
 import os
 import glob
@@ -19,6 +20,10 @@ class TempGetter:
     rawTemp = 0
     tempString = '0'
     numDecimalPlaces = 2
+
+    # constructor
+    def __init__(self):
+        pass
 
     # main method of functionality for class
     # get a temperature from a temp sensor and return it in requested format
