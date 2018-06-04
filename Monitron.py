@@ -11,9 +11,11 @@ import time
 # since the class technically doesn't need to have the getters and setters as object properties.
 
 from Getters.TempGetter import TempGetter as TempGetter
+from Getters.HumidityGetter import HumidityGetter as HumidityGetter
 from Getters.TimeGetter import TimeGetter as TimeGetter
 from Setters.DataStorer import DataStorer as DataStorer
 from Controllers.HeatController import HeatController as HeatController
+from Controllers.FanController import FanController as FanController
 
 
 class Monitron:
@@ -22,6 +24,8 @@ class Monitron:
     tempGetter = object
     tempStorer = object
     heatController = object
+    humidityController = object
+    fanController = object
 
     def __init__(self):
 
@@ -29,6 +33,8 @@ class Monitron:
         self.tempGetter = TempGetter()
         self.dataStorer = DataStorer()
         self.heatController = HeatController('NormallyON')  # Tell the controller which plug
+        self.humidityGetter = HumidityGetter('2302', '6')   # we're using an AM2302 on pin 6
+        self.fanController = FanController(26)            # our fan is a 5V PC fan on pin 26
 
     def print_status(self):
 
@@ -121,12 +127,22 @@ class Monitron:
             # give it a rest. don't spam the sensor too much
             time.sleep(time_interval)
 
+    def test_fan(self):
+
+        self.fanController.turn_fan_on()
+        print("fan on")
+        time.sleep(3)
+        self.fanController.turn_fan_off()
+        print("fan off")
+
 
 def main():
 
     monitron = Monitron()
     # monitron.monitor(80, 90, 60)
-    monitron.monitor_heat(80, 90, 60)
+    # monitron.monitor_heat(80, 90, 60)
+
+    monitron.test_fan()
 
 
 main()

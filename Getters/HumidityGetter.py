@@ -1,22 +1,20 @@
 # filename: HumidityGetter.py
 # author: rodgerthat
-# description: A Class to get humidity data from AOSONG AM2320 combination humidity / temp sensors.
-# url: https://akizukidenshi.com/download/ds/aosong/AM2320.pdf
+# description: A Class to get humidity data from AOSONG AM2302 combination humidity / temp sensors.
+# url: https://akizukidenshi.com/download/ds/aosong/AM2302.pdf
 
 import os
 import glob
 import sys
 import Adafruit_DHT
-from decimal import Decimal
 
 
-# TODO: add additional class constructor param to accept which device (i.e. multiple temp sensors)
 class HumidityGetter:
 
     sensor_types = {
         '11': Adafruit_DHT.DHT11,
         '22': Adafruit_DHT.DHT22,
-        '2320': Adafruit_DHT.AM2320
+        '2302': Adafruit_DHT.AM2302
     }
 
     sensor = ''
