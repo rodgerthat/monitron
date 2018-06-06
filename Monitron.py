@@ -16,6 +16,7 @@ from Getters.TimeGetter import TimeGetter as TimeGetter
 from Setters.DataStorer import DataStorer as DataStorer
 from Controllers.HeatController import HeatController as HeatController
 from Controllers.FanController import FanController as FanController
+from Controllers.RGBLEDController import RGBLEDController as RGBLEDController
 
 
 class Monitron:
@@ -26,6 +27,10 @@ class Monitron:
     heatController = object
     humidityController = object
     fanController = object
+    rgbled_1 = object
+    rgbled_2 = object
+    rgbled_3 = object
+    rgbled_4 = object
 
     def __init__(self):
 
@@ -35,6 +40,7 @@ class Monitron:
         self.heatController = HeatController('NormallyON')  # Tell the controller which plug
         self.humidityGetter = HumidityGetter('2302', '6')   # we're using an AM2302 on pin 6
         self.fanController = FanController(26)            # our fan is a 5V PC fan on pin 26
+        self.rgbled_1 = RGBLEDController()
 
     def print_status(self):
 
