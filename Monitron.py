@@ -10,8 +10,8 @@ import time
 # TODO : you're using aliases now, come back and clean up all the 'self' references.
 # since the class technically doesn't need to have the getters and setters as object properties.
 
-from Getters.TempGetter import TempGetter as TempGetter
-from Getters.HumidityGetter import HumidityGetter as HumidityGetter
+#from Getters.TempGetter import TempGetter as TempGetter
+from Getters.TemperatureAndHumidityGetter import TemperatureAndHumidityGetter as TemperatureAndHumidityGetter
 from Getters.TimeGetter import TimeGetter as TimeGetter
 from Setters.DataStorer import DataStorer as DataStorer
 from Controllers.HeatController import HeatController as HeatController
@@ -26,21 +26,24 @@ class Monitron:
     tempStorer = object
     heatController = object
     humidityController = object
+    temperatureAndHumidityGetter = object
     fanController = object
-    rgbled_1 = object
-    rgbled_2 = object
-    rgbled_3 = object
-    rgbled_4 = object
+    rgb_led_1 = object
+    rgb_led_2 = object
+    rgb_led_3 = object
+    rgb_led_4 = object
 
     def __init__(self):
 
         # initialize
-        self.tempGetter = TempGetter()
+        #TODO : have this read in from a configuration file
+
+        #self.tempGetter = TempGetter()     // DS1202B or whatever disabled in favor of combo AM2302
         self.dataStorer = DataStorer()
         self.heatController = HeatController('NormallyON')  # Tell the controller which plug
-        self.humidityGetter = HumidityGetter('2302', '6')   # we're using an AM2302 on pin 6
-        self.fanController = FanController(26)            # our fan is a 5V PC fan on pin 26
-        self.rgbled_1 = RGBLEDController()
+        self.temperatureAndHumidityGetter = TemperatureAndHumidityGetter('2302', '14')   # we're using an AM2302 on pin 6
+        self.fanController = FanController(26)              # our fan is a 5V PC fan on pin 26
+        self.rgb_led_1 = RGBLEDController(16,16,21)         # we're not using the green pins on these.
 
     def print_status(self):
 
@@ -133,6 +136,16 @@ class Monitron:
             # give it a rest. don't spam the sensor too much
             time.sleep(time_interval)
 
+    def test_rgb_led(self):
+        self.rgb_led_1.magenta_on()
+        time.sleep(3)
+        self.rgb_led_1.magenta_off()
+
+    def monitor_temperature_and_humidity(self):
+        temp_format = 'F'
+        current_humidity, current_temp = self.temperatureAndHumidityGetter.get_temperature_and_humidity(temp_format)
+        print("{0}*{1} {2}".format(current_temp, temp_format, current_humidity))
+
     def test_fan(self):
 
         self.fanController.turn_fan_on()
@@ -148,7 +161,11 @@ def main():
     # monitron.monitor(80, 90, 60)
     # monitron.monitor_heat(80, 90, 60)
 
-    monitron.test_fan()
+    # monitron.test_fan()
+
+    while True:
+        monitron.test_rgb_led()
+        monitron.monitor_temperature_and_humidity()
 
 
 main()

@@ -5,6 +5,7 @@
 ############################################
 
 import RPi.GPIO as GPIO
+import time
 
 
 class RGBLEDController:
@@ -27,6 +28,10 @@ class RGBLEDController:
         self.redPin = red_pin
         self.greenPin = green_pin
         self.bluePin = blue_pin
+        GPIO.setmode(GPIO.BCM)
+        GPIO.setup(self.redPin, GPIO.OUT)
+        GPIO.setup(self.greenPin, GPIO.OUT)
+        GPIO.setup(self.bluePin, GPIO.OUT)
 
         pass
 
@@ -34,14 +39,15 @@ class RGBLEDController:
     # LED Control Methods
     ##############################
 
-    def blink(self, pin):
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(pin, GPIO.OUT)
+    def blink(self, pin, duration):
+        GPIO.output(pin, GPIO.HIGH)
+        time.sleep(duration)
+        GPIO.output(pin, GPIO.LOW)
+
+    def turn_on(self, pin):
         GPIO.output(pin, GPIO.HIGH)
 
     def turn_off(self, pin):
-        GPIO.setmode(GPIO.BOARD)
-        GPIO.setup(pin, GPIO.OUT)
         GPIO.output(pin, GPIO.LOW)
 
     ################################
@@ -80,30 +86,30 @@ class RGBLEDController:
     #######################
 
     def red_on(self):
-        self.blink(self.redPin)
+        self.turn_on(self.redPin)
 
     def green_on(self):
-        self.blink(self.greenPin)
+        self.turn_on(self.greenPin)
 
     def blue_on(self):
-        self.blink(self.bluePin)
+        self.turn_on(self.bluePin)
 
     def yellow_on(self):
-        self.blink(self.redPin)
-        self.blink(self.greenPin)
+        self.turn_on(self.redPin)
+        self.turn_on(self.greenPin)
 
     def cyan_on(self):
-        self.blink(self.greenPin)
-        self.blink(self.bluePin)
+        self.turn_on(self.greenPin)
+        self.turn_on(self.bluePin)
 
     def magenta_on(self):
-        self.blink(self.redPin)
-        self.blink(self.bluePin)
+        self.turn_on(self.redPin)
+        self.turn_on(self.bluePin)
 
     def white_on(self):
-        self.blink(self.redPin)
-        self.blink(self.greenPin)
-        self.blink(self.bluePin)
+        self.turn_on(self.redPin)
+        self.turn_on(self.greenPin)
+        self.turn_on(self.bluePin)
 
     #######################
     # OFF
