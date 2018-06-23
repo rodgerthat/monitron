@@ -44,6 +44,7 @@ class Monitron:
         self.temperatureAndHumidityGetter = TemperatureAndHumidityGetter('2302', '14')   # we're using an AM2302 on pin 6
         self.fanController = FanController(26)              # our fan is a 5V PC fan on pin 26
         self.rgb_led_1 = RGBLEDController(16,16,21)         # we're not using the green pins on these.
+        self.rgb_led_2 = RGBLEDController(07, 07, 01)       # not using green pins yet maybe
 
     def print_status(self):
 
@@ -138,11 +139,16 @@ class Monitron:
 
     def test_rgb_led(self):
         self.rgb_led_1.magenta_on()
-        time.sleep(3)
+        print("RGB LED 1 magenta_on")
+        self.rgb_led_2.magenta_on()
+        print("RGB LED 2 magenta_on")
+        time.sleep(0.5)
         self.rgb_led_1.magenta_off()
+        print("RGB LED 1 magenta_off")
+        self.rgb_led_2.magenta_off()
+        print("RGB LED 2 magenta_off")
 
-    def monitor_temperature_and_humidity(self):
-        temp_format = 'F'
+    def monitor_temperature_and_humidity(self, temp_format):
         current_humidity, current_temp = self.temperatureAndHumidityGetter.get_temperature_and_humidity(temp_format)
         print("{0}*{1} {2}".format(current_temp, temp_format, current_humidity))
 
@@ -164,8 +170,14 @@ def main():
     # monitron.test_fan()
 
     while True:
+
+        # TODO: you left off here, about to implement the controllers you created and extended
+        # from the new base controller class. one of which is the outletBoxController, which
+        # will be used to control the lamp and the mister and tape recorder.
+
+        monitron.test_fan()
         monitron.test_rgb_led()
-        monitron.monitor_temperature_and_humidity()
+        monitron.monitor_temperature_and_humidity('F')
 
 
 main()

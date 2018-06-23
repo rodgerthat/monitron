@@ -1,4 +1,4 @@
-# filename: FanController.py
+# filename: LampController.py
 # author: rodgerthat
 # description: A Class to control a 5V PC fan with a pull-down transistor
 
