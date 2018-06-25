@@ -45,7 +45,7 @@ class TemperatureAndHumidityGetter:
             return humidity, temperature
         if temp_format == 'F':
             temperature = float(temperature) * 9/5.0 + 32
-            return humidity, temperature
+            return temperature, humidity
 
     @staticmethod
     def format_sensor_data(humidity, temperature):

@@ -14,143 +14,152 @@ import time
 from Getters.TemperatureAndHumidityGetter import TemperatureAndHumidityGetter as TemperatureAndHumidityGetter
 from Getters.TimeGetter import TimeGetter as TimeGetter
 from Setters.DataStorer import DataStorer as DataStorer
+from Controllers.Controller import Controller as Controller
 from Controllers.HeatController import HeatController as HeatController
 from Controllers.FanController import FanController as FanController
 from Controllers.RGBLEDController import RGBLEDController as RGBLEDController
+from Controllers.OutletBoxController import OutletBoxController as OutletBoxController
 
 
 class Monitron:
 
-    currentTemp = 0.0
-    tempGetter = object
-    tempStorer = object
-    heatController = object
-    humidityController = object
+    pin_map_key = "bcm_pin_dict"
+    currentTemperature = 0.0
+    currentHumidity = 0.0
+
+    # tempGetter = object
     temperatureAndHumidityGetter = object
+
+    dataStorer = object
+
+    # heatController = object
+
+    humidityController = object
     fanController = object
+
     rgb_led_1 = object
     rgb_led_2 = object
     rgb_led_3 = object
     rgb_led_4 = object
 
+    outletBoxController = object
+    lampController = object
+
     def __init__(self):
 
-        # initialize
-        #TODO : have this read in from a configuration file
+        # TODO : have this read in from a configuration file
+        # initialize Monitron Modules (Mwa Ha Ha)
 
-        #self.tempGetter = TempGetter()     // DS1202B or whatever disabled in favor of combo AM2302
+        # self.tempGetter = TempGetter()     // DS1202B or whatever disabled in favor of combo AM2302
+
         self.dataStorer = DataStorer()
         self.heatController = HeatController('NormallyON')  # Tell the controller which plug
-        self.temperatureAndHumidityGetter = TemperatureAndHumidityGetter('2302', '14')   # we're using an AM2302 on pin 6
+        self.temperatureAndHumidityGetter = TemperatureAndHumidityGetter('2302', '14') # we're using an AM2302 on pin 6
         self.fanController = FanController(26)              # our fan is a 5V PC fan on pin 26
         self.rgb_led_1 = RGBLEDController(16,16,21)         # we're not using the green pins on these.
         self.rgb_led_2 = RGBLEDController(07, 07, 01)       # not using green pins yet maybe
+        # the peripherals controlled by the outlet box
+
+        # when the class initializes, set the pins connected to the output box relays
+        # accepts key string of corresponding dictionary for outlet number to pin mapping
+        # "bcm_pin_dict",  "board_gpio_pin_dict":
+        self.outletBoxController = OutletBoxController(0, self.pin_map_key)
+        self.outletBoxController.set_pins()
+        self.lampController = OutletBoxController(8, self.pin_map_key)    # the lamp is plugged in to outlet 8
+        self.mistController = OutletBoxController(7, self.pin_map_key)    # the mister is plugged into outlet 7
 
     def print_status(self):
 
         # print "%s %s" % (hello, world)
         # print("{} {}".format(hello, world))
-        print("{} : Temp : {} | heatON : {}".format(TimeGetter.get_epoch_time(), self.currentTemp, self.heatController.heatON))
+        print("|EpochTime: {}\t| Temp : {}\t| Humidity: {}\t".format(TimeGetter.get_epoch_time(), self.currentTemperature, self.currentHumidity))
         print("-----------------------------------------")
 
-    def monitor(self, temp_min, temp_max, time_interval):
+    def initialize_peripherals(self):
+        self.turn_lights_on()
+
+    def turn_lights_on(self):
+        self.rgb_led_1.magenta_on()
+        print("RGB LED 1 magenta_on")
+        self.rgb_led_2.magenta_on()
+        print("RGB LED 2 magenta_on")
+
+    def turn_lights_off(self):
+        self.rgb_led_1.magenta_off()
+        print("RGB LED 1 magenta_off")
+        self.rgb_led_2.magenta_off()
+        print("RGB LED 2 magenta_off")
+
+    def monitor(self, temperature_min, temperature_max, humidity_min, humidity_max, time_interval):
+
+        self.initialize_peripherals()
 
         while True:
 
-            # see what's up
+            # get the current temperature and current humidity from the sensor
+            self.currentTemperature, self.currentHumidity = self.temperatureAndHumidityGetter.get_temperature_and_humidity('F')
 
-            # # get the current temperature in Raw Temp Data, direct from the
-            # self.currentTemp = self.tempGetter.get_temp('R', 2)
-            # print(self.currentTemp)
+            # store the current temperature and humidity data
+            self.dataStorer.store_data(self.currentTemperature, self.currentHumidity)
 
-            # # get the current temperature in Celsius
-            # self.currentTemp = self.tempGetter.get_temp('C', 2)
-            # print(self.currentTemp)
+            # TODO : maybe add the fish tank heater in a little pool of water . . .
+            # just in case the lamp alone isn't enough to heat the terrarium
+            # or the light is too much for the plants over time.
+            # i.e. the light has to be on too long to heat the chamber and is cooking the plants.
 
-            # # get the current temperature in Fahrenheit
-            # self.currentTemp = self.tempGetter.get_temp('F', 2)
-            # print(self.currentTemp)
-
-            self.currentTemp = self.tempGetter.get_temp('F')
-            self.dataStorer.store_data(self.currentTemp)
-            print(self.currentTemp)
-
-            # test the HeatController
-            # if it's on, turn it off,
-            # if it's off, turn it on.
-            # if self.heatController.heatON:
-            #
-            #     self.heatController.turn_OFF()
-            #
-            # elif not self.heatController.heatON:
-            #
-            #     self.heatController.turn_ON()
-
-            # else:
-            #
-            #     self.heatController.turn_ON()
-
-            # give it a rest. don't spam the sensor too much
-            time.sleep(time_interval)
-
-    def monitor_heat(self, temp_min, temp_max, time_interval):
-
-        while True:
-
-            # get the current temperature in Fahrenheit
-            self.currentTemp = self.tempGetter.get_temp('F')
-
-            self.dataStorer.store_data(self.currentTemp)    # store the current temp
-
-            # if self.currentTemp > temp_min and self.currentTemp < temp_max:
-            #
-            #     self.heatController.turn_ON()
-            #
-            # else:
-            #
-            #     self.heatController.turn_OFF()
-
-            # print("currentTemp : {} | temp_min : {} | temp_max : {}".format(type(self.currentTemp), type(temp_min), type(temp_max)))
+            # check the temperature conditions, and toggle the heat lamp as necessary
 
             # if the current temp is lower then the lowest temp minimum we want,
-            if float(self.currentTemp) < float(temp_min):
+            if float(self.currentTemperature) < float(temperature_min):
 
-                # print("currentTemp : {} < temp_min : {}".format(self.currentTemp, temp_min))
-                print("{} : {} > {} | {}".format(TimeGetter.get_epoch_time(), self.currentTemp, temp_min, self.currentTemp < temp_min))
-                self.heatController.turn_ON()   # turn heat on
+                print("{} : {} > {} | {}".format(TimeGetter.get_epoch_time(), self.currentTemperature, temperature_min, self.currentTemperature < temperature_min))
+                self.lampController.turn_outlet_on()
 
             # else if the current temp is greater than the max temp we want,
-            elif float(self.currentTemp) > float(temp_max):
+            elif float(self.currentTemperature) > float(temperature_max):
 
-                # print("currentTemp : {} > temp_max : {}".format(self.currentTemp, temp_max))
-                print("{} : {} > {} | {}".format(TimeGetter.get_epoch_time(), self.currentTemp, temp_max, self.currentTemp > temp_max))
-                self.heatController.turn_OFF()  # turn heat off, if it isnt' already off
+                print("{} : {} > {} | {}".format(TimeGetter.get_epoch_time(), self.currentTemperature, temperature_max, self.currentTemperature > temperature_max))
+                self.lampController.turn_outlet_off()  # turn heat off, if it isnt' already off
 
-            # else:
+            else:
 
-                # print("Neither condition has been met")
+                print("Neither temperature condition has been met")
 
-            # TODO : Add a default case else here
-            # checkitty check yo sef b4 u wreck yo sef
-            self.print_status()
+            # check the humidity conditions and toggle the humidifier as necessary
+
+            # if the current temp is lower then the lowest temp minimum we want,
+            if float(self.currentHumidity) < float(humidity_min):
+
+                print("{} : {} > {} | {}".format(TimeGetter.get_epoch_time(), self.currentHumidity, humidity_min, self.currentHumidity < humidity_min))
+                self.lampController.turn_outlet_on()
+
+            # else if the current temp is greater than the max temp we want,
+            elif float(self.currentHumidity) > float(humidity_max):
+
+                print("{} : {} > {} | {}".format(TimeGetter.get_epoch_time(), self.currentHumidity, humidity_max, self.currentHumidity > humidity_max))
+                self.lampController.turn_outlet_off()  # turn lamp off, if it isnt' already off
+
+            else:
+
+                print("Neither humidity condition has been met")
 
             # give it a rest. don't spam the sensor too much
             time.sleep(time_interval)
+
+    def monitor_temperature_and_humidity(self, temp_format):
+        current_temp, current_humidity = self.temperatureAndHumidityGetter.get_temperature_and_humidity(temp_format)
+        print("{0}*{1} {2}".format(current_temp, temp_format, current_humidity))
 
     def test_rgb_led(self):
         self.rgb_led_1.magenta_on()
         print("RGB LED 1 magenta_on")
         self.rgb_led_2.magenta_on()
         print("RGB LED 2 magenta_on")
-        time.sleep(0.5)
+        time.sleep(1.5)
         self.rgb_led_1.magenta_off()
         print("RGB LED 1 magenta_off")
         self.rgb_led_2.magenta_off()
         print("RGB LED 2 magenta_off")
-
-    def monitor_temperature_and_humidity(self, temp_format):
-        current_humidity, current_temp = self.temperatureAndHumidityGetter.get_temperature_and_humidity(temp_format)
-        print("{0}*{1} {2}".format(current_temp, temp_format, current_humidity))
 
     def test_fan(self):
 
@@ -160,24 +169,35 @@ class Monitron:
         self.fanController.turn_fan_off()
         print("fan off")
 
+    def test_lamp(self):
+        self.lampController.turn_outlet_on()
+        time.sleep(1)
+        self.lampController.turn_outlet_off()
+
+    def test_data_storer(self):
+        temp_format = 'F'
+        current_temp, current_humidity = self.temperatureAndHumidityGetter.get_temperature_and_humidity(temp_format)
+        self.dataStorer.store_data(current_temp, current_humidity)
+        # print("{0}*{1} {2}".format(current_temp, temp_format, current_humidity))
+
 
 def main():
 
     monitron = Monitron()
-    # monitron.monitor(80, 90, 60)
-    # monitron.monitor_heat(80, 90, 60)
 
-    # monitron.test_fan()
+    # temperature_min, temperature_max, humidity_min, humidity_max, time_interval
+    monitron.monitor(70, 80, 40, 60, 3)
 
     while True:
 
         # TODO: you left off here, about to implement the controllers you created and extended
-        # from the new base controller class. one of which is the outletBoxController, which
-        # will be used to control the lamp and the mister and tape recorder.
 
-        monitron.test_fan()
-        monitron.test_rgb_led()
-        monitron.monitor_temperature_and_humidity('F')
+        #monitron.test_lamp()
+        #monitron.test_fan()
+        #monitron.test_rgb_led()
+        #monitron.monitor_temperature_and_humidity('F')
+        monitron.test_data_storer()
+        time.sleep(5)
 
 
 main()

@@ -1,22 +1,12 @@
-# filename: LampController.py
-# author: rodgerthat
-# description: A Class to control a 5V PC fan with a pull-down transistor
+"""
+ " FileName: LampController
+ " Author: goat
+ " Created: 6/23/18
+ " Description: A Controller Class for turning the heat lamp on and off
+ """
 
-import RPi.GPIO as GPIO
+import RPi._GPIO as GPIO
 
+class LampController(OutletBoxController):
 
-class FanController:
-
-    pin = ''
-
-    def __init__(self, pin):
-        self.pin = pin
-        GPIO.setup(self.pin, GPIO.OUT)
-
-        GPIO.output(self.pin, GPIO.LOW)
-
-    def turn_fan_on(self):
-        GPIO.output(self.pin, GPIO.HIGH)
-
-    def turn_fan_off(self):
-        GPIO.output(self.pin, GPIO.LOW)
+    outlet

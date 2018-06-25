@@ -36,26 +36,27 @@ class DataStorer:
 
             print(self.currentFilePath)
             self.currentFile = open(self.currentFilePath, "w+")
-            self.currentFile.write("td, t1")
+            self.currentFile.write("epoch_time, humidity, temperature")
             self.currentFile.close()
 
-    def create_storable_data(self, data_to_store):
+    def format_data_string(self, current_temp, current_humidity):
 
-        # create a csv string with epoch time and temp data
-        self.currentTemp = data_to_store
+        # create a csv string with epoch time and temp and humidity data
         self.currentEpochTime = int(time.time())
 
-        storable_data = "{}, {}\n".format(self.currentEpochTime, self.currentTemp)
+        data_string = "{}, {}, {}\n".format(self.currentEpochTime, current_temp, current_humidity)
 
-        return storable_data
+        print(data_string)
 
-    def store_data(self, data_to_store):
+        return data_string
 
-        storable_data = self.create_storable_data(data_to_store)
+    def store_data(self, current_temp, current_humidity):
 
-        # open file, to append with data
+        data_string = self.format_data_string(current_temp, current_humidity)
+
+        # open file, to append with data string
         self.currentFile = open(self.currentFilePath, "a")
-        self.currentFile.write(storable_data)
+        self.currentFile.write(data_string)
         self.currentFile.close()
 
 
