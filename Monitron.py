@@ -66,7 +66,7 @@ class Monitron:
         self.outletBoxController = OutletBoxController(0, self.pin_map_key)
         self.outletBoxController.set_pins()
         self.lampController = OutletBoxController(8, self.pin_map_key)    # the lamp is plugged in to outlet 8
-        self.mistController = OutletBoxController(7, self.pin_map_key)    # the mister is plugged into outlet 7
+        self.humidifierController = OutletBoxController(7, self.pin_map_key)    # the mister is plugged into outlet 7
 
     def print_status(self):
 
@@ -124,24 +124,30 @@ class Monitron:
             else:
 
                 print("Neither temperature condition has been met")
+                print("temperature_min ? self.currentTemperature ? temperature_max")
+                print("{} ? {} ? {}".format(temperature_min, self.currentTemperature, temperature_max))
 
             # check the humidity conditions and toggle the humidifier as necessary
 
-            # if the current temp is lower then the lowest temp minimum we want,
+            # if the current humidity is lower then the lowest humidity minimum we want,
             if float(self.currentHumidity) < float(humidity_min):
 
+                print("self.currentHumidity < humidity_min")
                 print("{} : {} > {} | {}".format(TimeGetter.get_epoch_time(), self.currentHumidity, humidity_min, self.currentHumidity < humidity_min))
-                self.lampController.turn_outlet_on()
+                self.humidifierController.turn_outlet_on()
 
-            # else if the current temp is greater than the max temp we want,
+            # else if the current humidity is greater than the max humidity we want,
             elif float(self.currentHumidity) > float(humidity_max):
 
+                print("self.currentHumidity > humidity_max")
                 print("{} : {} > {} | {}".format(TimeGetter.get_epoch_time(), self.currentHumidity, humidity_max, self.currentHumidity > humidity_max))
-                self.lampController.turn_outlet_off()  # turn lamp off, if it isnt' already off
+                self.humidifierController.turn_outlet_off()  # turn lamp off, if it isnt' already off
 
             else:
 
                 print("Neither humidity condition has been met")
+                print("humidity_min ? self.currentHumidity ? humidity_max")
+                print("{} ? {} ? {}".format(humidity_min, self.currentHumidity, humidity_max))
 
             # give it a rest. don't spam the sensor too much
             time.sleep(time_interval)
@@ -185,10 +191,12 @@ def main():
 
     monitron = Monitron()
 
+    monitron.test_fan()
+
     # temperature_min, temperature_max, humidity_min, humidity_max, time_interval
     monitron.monitor(70, 80, 40, 60, 3)
 
-    while True:
+    #while True:
 
         # TODO: you left off here, about to implement the controllers you created and extended
 
@@ -196,8 +204,8 @@ def main():
         #monitron.test_fan()
         #monitron.test_rgb_led()
         #monitron.monitor_temperature_and_humidity('F')
-        monitron.test_data_storer()
-        time.sleep(5)
+        #monitron.test_data_storer()
 
+        #time.sleep(5)
 
 main()

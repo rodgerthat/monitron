@@ -19,6 +19,7 @@ class OutletBoxController(Controller):
     """
     outlet_number = 0
     pin_map_key = ""
+    is_on = False       # this is a flag to not trigger the relay needlessly
 
     pin_maps = {
 
@@ -66,12 +67,14 @@ class OutletBoxController(Controller):
 
     def turn_outlet_on(self):
 
-        print(self.outlet_number)
-        print(self.pin_maps[self.pin_map_key][self.outlet_number])
-
-        pin = self.pin_maps[self.pin_map_key][self.outlet_number]
-        GPIO.output(pin, GPIO.HIGH)
+        # if it's not already on, then turn it on
+        if not self.is_on:
+            pin = self.pin_maps[self.pin_map_key][self.outlet_number]
+            GPIO.output(pin, GPIO.HIGH)
 
     def turn_outlet_off(self):
-        pin = self.pin_maps[self.pin_map_key][self.outlet_number]
-        GPIO.output(pin, GPIO.LOW)
+
+        # if the item is on, it off
+        if self.is_on:
+            pin = self.pin_maps[self.pin_map_key][self.outlet_number]
+            GPIO.output(pin, GPIO.LOW)
