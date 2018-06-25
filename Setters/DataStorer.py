@@ -46,7 +46,7 @@ class DataStorer:
 
         data_string = "{}, {}, {}\n".format(self.currentEpochTime, current_temp, current_humidity)
 
-        print(data_string)
+        # print(data_string)
 
         return data_string
 
