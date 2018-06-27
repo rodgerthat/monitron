@@ -56,7 +56,7 @@ class Monitron:
         self.heatController = HeatController('NormallyON')  # Tell the controller which plug
         self.temperatureAndHumidityGetter = TemperatureAndHumidityGetter('2302', '14') # we're using an AM2302 on pin 6
         self.fanController = FanController(26)              # our fan is a 5V PC fan on pin 26
-        self.rgb_led_1 = RGBLEDController(16, 16, 21)         # we're not using the green pins on these.
+        self.rgb_led_1 = RGBLEDController(16, 16, 21)       # we're not using the green pins on these.
         self.rgb_led_2 = RGBLEDController(07, 07, 01)       # not using green pins yet maybe
         # the peripherals controlled by the outlet box
 
@@ -65,7 +65,7 @@ class Monitron:
         # "bcm_pin_dict",  "board_gpio_pin_dict":
         self.outletBoxController = OutletBoxController(0, self.pin_map_key)
         self.outletBoxController.set_pins()
-        self.lampController = OutletBoxController(8, self.pin_map_key)    # the lamp is plugged in to outlet 8
+        self.lampController = OutletBoxController(8, self.pin_map_key)          # the lamp is plugged in to outlet 8
         self.humidifierController = OutletBoxController(7, self.pin_map_key)    # the mister is plugged into outlet 7
 
     def print_status(self):
@@ -77,6 +77,8 @@ class Monitron:
 
     def initialize_peripherals(self):
         self.turn_lights_on()
+        self.test_fan()
+        self.lampController.turn_outlet_on()
 
     def turn_lights_on(self):
         self.rgb_led_1.magenta_on()
@@ -91,8 +93,6 @@ class Monitron:
         print("RGB LED 2 magenta_off")
 
     def monitor(self, temperature_min, temperature_max, humidity_min, humidity_max, time_interval):
-
-        self.initialize_peripherals()
 
         while True:
 
@@ -123,7 +123,7 @@ class Monitron:
 
                 print("Temperature: High")
                 print("{} < {} > {}".format(temperature_min, self.currentTemperature, temperature_max))
-                self.lampController.turn_outlet_off()  # turn heat off, if it isnt' already off
+                self.lampController.turn_outlet_off()  # turn heat off, if it isn't already off
 
             else:
 
@@ -193,10 +193,10 @@ def main():
 
     monitron = Monitron()
 
-    monitron.test_fan()
+    monitron.initialize_peripherals()
 
     # temperature_min, temperature_max, humidity_min, humidity_max, time_interval
-    monitron.monitor(70, 80, 40, 60, 3)
+    monitron.monitor(70, 80, 70, 80, 3)
 
     #while True:
 

@@ -70,7 +70,7 @@ class OutletBoxController(Controller):
         # if it's not already on, then turn it on
         if not self.is_on:
             pin = self.pin_maps[self.pin_map_key][self.outlet_number]
-            GPIO.output(pin, GPIO.HIGH)
+            GPIO.output(pin, GPIO.LOW)
             self.is_on = True
 
     def turn_outlet_off(self):
@@ -78,5 +78,5 @@ class OutletBoxController(Controller):
         # if the item is on, it off
         if self.is_on:
             pin = self.pin_maps[self.pin_map_key][self.outlet_number]
-            GPIO.output(pin, GPIO.LOW)
+            GPIO.output(pin, GPIO.HIGH)
             self.is_on = False
