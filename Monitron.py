@@ -16,7 +16,6 @@ from Getters.TimeGetter import TimeGetter as TimeGetter
 from Setters.DataStorer import DataStorer as DataStorer
 from Controllers.Controller import Controller as Controller
 from Controllers.HeatController import HeatController as HeatController
-from Controllers.FanController import FanController as FanController
 from Controllers.RGBLEDController import RGBLEDController as RGBLEDController
 from Controllers.OutletBoxController import OutletBoxController as OutletBoxController
 
@@ -55,7 +54,7 @@ class Monitron:
         self.dataStorer = DataStorer()
         self.heatController = HeatController('NormallyON')  # Tell the controller which plug
         self.temperatureAndHumidityGetter = TemperatureAndHumidityGetter('2302', '14') # we're using an AM2302 on pin 6
-        self.fanController = FanController(26)              # our fan is a 5V PC fan on pin 26
+        self.fanController = Controller(26)              # our fan is a 5V PC fan on pin 26
         self.rgb_led_1 = RGBLEDController(16, 16, 21)       # we're not using the green pins on these.
         self.rgb_led_2 = RGBLEDController(07, 07, 01)       # not using green pins yet maybe
         # the peripherals controlled by the outlet box
@@ -78,7 +77,7 @@ class Monitron:
     def initialize_peripherals(self):
         self.turn_lights_on()
         self.test_fan()
-        self.lampController.turn_outlet_on()
+        #self.lampController.turn_outlet_on()
 
     def turn_lights_on(self):
         self.rgb_led_1.magenta_on()
@@ -145,6 +144,7 @@ class Monitron:
                 print("Humidity: High")
                 print("{} < {} > {}".format(humidity_min, self.currentHumidity, humidity_max))
                 self.humidifierController.turn_outlet_off()  # turn humidifier off, if it isnt' already off
+                self.fanController.turn_on()
 
             else:
 
@@ -171,10 +171,10 @@ class Monitron:
 
     def test_fan(self):
 
-        self.fanController.turn_fan_on()
+        self.fanController.turn_on()
         print("fan on")
         time.sleep(3)
-        self.fanController.turn_fan_off()
+        self.fanController.turn_off()
         print("fan off")
 
     def test_lamp(self):
