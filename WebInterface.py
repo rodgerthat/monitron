@@ -135,7 +135,6 @@ def index():
                                 <!-- <img src="/stream.mjpg" /> -->
                                 <button data-role="button" id="button_take_pic">Take a Picture!</button>
                                 <img id="recent_pic" src="static/images/recent.jpg" alt="most recent cam pic" />
-                                <h2>Hi Jenny! <3</h2>
                                 
                             </div><!-- /.ui-block-b -->
                             
