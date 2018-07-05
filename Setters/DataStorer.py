@@ -36,7 +36,7 @@ class DataStorer:
 
             print(self.currentFilePath)
             self.currentFile = open(self.currentFilePath, "w+")
-            self.currentFile.write("epoch_time, humidity, temperature")
+            self.currentFile.write("epoch_time, humidity, temperature\n")       # I always forget the \n
             self.currentFile.close()
 
     def format_data_string(self, current_temp, current_humidity):

@@ -8,6 +8,7 @@ import RPi.GPIO as GPIO
 class Controller:
 
     pin = ''
+    is_on = False   # a flag to check if on or off
 
     def __init__(self, pin):
 
@@ -21,10 +22,14 @@ class Controller:
     def turn_on(self):
 
         # set the output pin voltage to 3.3V
-        GPIO.output(self.pin, GPIO.HIGH)
+        if not self.is_on:
+            GPIO.output(self.pin, GPIO.HIGH)
+            self.is_on = True
 
     def turn_off(self):
 
         # set the output pin voltage to 0
-        GPIO.output(self.pin, GPIO.LOW)
+        if self.is_on:
+            GPIO.output(self.pin, GPIO.LOW)
+            self.is_on = False
 

@@ -15,6 +15,8 @@ class RGBLEDController:
     # 13 = GPIO27
     # 15 = GPIO22
 
+    is_on = False       # cheating for magenta for venus flytrap terrarium control
+
     # default pin values
     redPin = 11
     greenPin = 13
@@ -105,6 +107,7 @@ class RGBLEDController:
     def magenta_on(self):
         self.turn_on(self.redPin)
         self.turn_on(self.bluePin)
+        self.is_on = True
 
     def white_on(self):
         self.turn_on(self.redPin)
@@ -135,6 +138,7 @@ class RGBLEDController:
     def magenta_off(self):
         self.turn_off(self.redPin)
         self.turn_off(self.bluePin)
+        self.is_on = False
 
     def white_off(self):
         self.turn_off(self.redPin)

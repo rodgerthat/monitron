@@ -18,6 +18,7 @@ from Controllers.Controller import Controller as Controller
 from Controllers.HeatController import HeatController as HeatController
 from Controllers.RGBLEDController import RGBLEDController as RGBLEDController
 from Controllers.OutletBoxController import OutletBoxController as OutletBoxController
+from Controllers.CameraController import CameraController as CameraController
 
 
 class Monitron:
@@ -44,6 +45,8 @@ class Monitron:
     outletBoxController = object
     lampController = object
 
+    cameraController = object
+
     def __init__(self):
 
         # TODO : have this read in from a configuration file
@@ -66,6 +69,11 @@ class Monitron:
         self.outletBoxController.set_pins()
         self.lampController = OutletBoxController(8, self.pin_map_key)          # the lamp is plugged in to outlet 8
         self.humidifierController = OutletBoxController(7, self.pin_map_key)    # the mister is plugged into outlet 7
+        self.cameraController = CameraController()                              # clicka clicka
+
+        self.initialize_peripherals()
+        # temperature_min, temperature_max, humidity_min, humidity_max, time_interval
+        self.monitor(70, 80, 70, 80, 3)     # go.
 
     def print_status(self):
 
@@ -77,6 +85,7 @@ class Monitron:
     def initialize_peripherals(self):
         self.turn_lights_on()
         self.test_fan()
+        self.cameraController.take_picture()
         #self.lampController.turn_outlet_on()
 
     def turn_lights_on(self):
@@ -93,7 +102,7 @@ class Monitron:
 
     def monitor(self, temperature_min, temperature_max, humidity_min, humidity_max, time_interval):
 
-        while True:
+        #while True:
 
             # get the current temperature and current humidity from the sensor
             self.currentTemperature, self.currentHumidity = self.temperatureAndHumidityGetter.get_temperature_and_humidity('F')
@@ -137,6 +146,7 @@ class Monitron:
                 print("Humidity: Low")
                 print("{} > {} < {}".format(humidity_min, self.currentHumidity, humidity_max))
                 self.humidifierController.turn_outlet_on()
+                self.fanController.turn_off()
 
             # else if the current humidity is greater than the max humidity we want,
             elif float(self.currentHumidity) > float(humidity_max):
@@ -150,6 +160,7 @@ class Monitron:
 
                 print("Humidity: Sweet Spot")
                 print("{} < {} < {}".format(humidity_min, self.currentHumidity, humidity_max))
+                self.fanController.turn_off()
 
             # give it a rest. don't spam the sensor too much
             time.sleep(time_interval)
@@ -163,7 +174,7 @@ class Monitron:
         print("RGB LED 1 magenta_on")
         self.rgb_led_2.magenta_on()
         print("RGB LED 2 magenta_on")
-        time.sleep(1.5)
+        time.sleep(1)
         self.rgb_led_1.magenta_off()
         print("RGB LED 1 magenta_off")
         self.rgb_led_2.magenta_off()
@@ -173,7 +184,7 @@ class Monitron:
 
         self.fanController.turn_on()
         print("fan on")
-        time.sleep(3)
+        time.sleep(1)
         self.fanController.turn_off()
         print("fan off")
 
@@ -188,24 +199,3 @@ class Monitron:
         self.dataStorer.store_data(current_temp, current_humidity)
         # print("{0}*{1} {2}".format(current_temp, temp_format, current_humidity))
 
-
-def main():
-
-    monitron = Monitron()
-
-    monitron.initialize_peripherals()
-
-    # temperature_min, temperature_max, humidity_min, humidity_max, time_interval
-    monitron.monitor(70, 80, 70, 80, 3)
-
-    #while True:
-
-        #monitron.test_lamp()
-        #monitron.test_fan()
-        #monitron.test_rgb_led()
-        #monitron.monitor_temperature_and_humidity('F')
-        #monitron.test_data_storer()
-
-        #time.sleep(5)
-
-main()
