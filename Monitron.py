@@ -56,8 +56,8 @@ class Monitron:
 
         self.dataStorer = DataStorer()
         self.heatController = HeatController('NormallyON')  # Tell the controller which plug
-        self.temperatureAndHumidityGetter = TemperatureAndHumidityGetter('2302', '14') # we're using an AM2302 on pin 6
-        self.fanController = Controller(26)              # our fan is a 5V PC fan on pin 26
+        self.temperatureAndHumidityGetter = TemperatureAndHumidityGetter('2302', '19') # we're using an AM2302 on GPIO 19
+        self.fanController = Controller(26)              # our fan is a 5V PC fan on pin GPIO 26
         self.rgb_led_1 = RGBLEDController(16, 16, 21)       # we're not using the green pins on these.
         self.rgb_led_2 = RGBLEDController(07, 07, 01)       # not using green pins yet maybe
         # the peripherals controlled by the outlet box

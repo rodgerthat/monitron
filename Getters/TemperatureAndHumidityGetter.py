@@ -28,11 +28,11 @@ class TemperatureAndHumidityGetter:
 
     # get humidity reading
     def get_humidity(self):
-        humidity = Adafruit_DHT.read_retry(self.sensor, self.pin)
+        humidity, temperature = Adafruit_DHT.read_retry(self.sensor, self.pin)
         return humidity
 
     def get_temp(self, temp_format):
-        temperature = Adafruit_DHT.read_retry(self.sensor, self.pin)
+        humidity, temperature = Adafruit_DHT.read_retry(self.sensor, self.pin)
         if temp_format == 'C':
             return temperature
         if temp_format == 'F':
@@ -40,18 +40,19 @@ class TemperatureAndHumidityGetter:
 
     def get_temperature_and_humidity(self, temp_format):
         humidity, temperature = Adafruit_DHT.read_retry(self.sensor, self.pin)
-        humidity, temperature = self.format_sensor_data(humidity, temperature)
+        print(temperature, humidity)
+        temperature, humidity = self.format_sensor_data(temperature, humidity)
         if temp_format == 'C':
-            return humidity, temperature
+            return temperature, humidity
         if temp_format == 'F':
             temperature = float(temperature) * 9/5.0 + 32
             return temperature, humidity
 
     @staticmethod
-    def format_sensor_data(humidity, temperature):
-        if humidity is not None and temperature is not None:
+    def format_sensor_data(temperature, humidity):
+        if temperature is not None and humidity is not None:
             formatted_humidity = "{0:0.1f}".format(humidity)
             formatted_temperature = "{0:0.1f}".format(temperature)
-            return formatted_humidity, formatted_temperature
+            return formatted_temperature, formatted_humidity
         else:
             return 'Failed to get reading, try again'
